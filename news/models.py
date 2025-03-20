@@ -30,3 +30,19 @@ class News(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.category.name})"
+    
+
+class Message(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    sended_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-sended_at', 'is_read']
+        verbose_name = 'message'
+        verbose_name_plural = 'messages'
+
+    def __str__(self):
+        return f"{self.message[:31]} from {self.name}"

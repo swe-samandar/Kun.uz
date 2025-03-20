@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import News, Category
 from datetime import datetime
+from .models import Message
 
 
 def get_date():
@@ -64,8 +65,15 @@ def contact(request):
         'news_sport': news_sport,
         'ctgs': get_categories(),
         'date': get_date(),
-
     }
+
+    if request.method == "POST":
+        msg = Message()
+        msg.name=request.POST.get('name', 'Someone'),
+        msg.email=request.POST.get('email', 'example@gmail.com'),
+        msg.message=request.POST.get('message', 'No messages')
+        msg.save()
+        return redirect('contact')
 
     return render(request, 'contact.html', context=context)
 

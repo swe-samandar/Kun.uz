@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>NewsFeed | Contact</title>
+<title>KunUz | Contact</title>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -44,7 +44,7 @@
       </div>
       <div class="col-lg-12 col-md-12 col-sm-12">
         <div class="header_bottom">
-          <div class="logo_area"><a href="{% url 'index' %}" class="logo"><img src="{% static 'images/logo.jpg' %}" alt=""></a></div>
+          <div class="logo_area"><a href="{% url 'index' %}" class="logo"><img src="{% static 'images/kunuz_logo.jpg' %}" alt=""></a></div>
           <div class="add_banner"><a href="#"><img src="{% static 'images/addbanner_728x90_V1.jpg' %}" alt=""></a></div>
         </div>
       </div>
@@ -101,10 +101,11 @@
           <div class="contact_area">
             <h2>Contact Us</h2>
             <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labolore magna aliqua. Ut enim ad minim veniam. Lorem ipsum dosectetur adipisicing elit, sed do.Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-            <form action="#" class="contact_form">
-              <input class="form-control" type="text" placeholder="Name*">
-              <input class="form-control" type="email" placeholder="Email*">
-              <textarea class="form-control" cols="30" rows="10" placeholder="Message*"></textarea>
+            <form method="POST" class="contact_form">
+              {% csrf_token %}
+              <input class="form-control" type="text" name="name" placeholder="Name*">
+              <input class="form-control" type="email" name="email" placeholder="Email*">
+              <textarea class="form-control" cols="30" name="message" rows="10" placeholder="Message*"></textarea>
               <input type="submit" value="Send Message">
             </form>
           </div>
