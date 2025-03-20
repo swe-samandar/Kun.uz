@@ -17,7 +17,7 @@ class Category(models.Model):
 class News(models.Model):
     title = models.CharField(max_length=300)
     short_desc = models.CharField(max_length=300)
-    description = models.TextField()
+    description = RichTextField()
     created_at = models.DateField(auto_now_add=True)
     views = models.PositiveIntegerField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE)

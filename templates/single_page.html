@@ -112,7 +112,7 @@
             <div class="post_commentbox"> <a href="#"><i class="fa fa-eye"></i>{{ info.views }}</a> <span><i class="fa fa-calendar"></i>{{ info.created_at }}</span> <a href="#"><i class="fa fa-tags"></i>{{ info.category.name}}</a> </div>
             <div class="single_page_content"> <img class="img-center" src="{{ info.image.url }}" alt="">
               <blockquote>{{ info.short_desc}}</blockquote>
-              <p>{{ info.description }}</p>
+              <p>{{ info.description|safe }}</p>
             </div>
             <div class="social_link">
               <ul class="sociallink_nav">
