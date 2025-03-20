@@ -1,8 +1,9 @@
 {% load static %}
+{% load custom_filters %}
 <!DOCTYPE html>
 <html>
 <head>
-<title>NewsFeed | Pages | Single Page</title>
+<title>NewsFeed | Single Page</title>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -38,7 +39,7 @@
             </ul>
           </div>
           <div class="header_top_right">
-            <p>Friday, December 05, 2025</p>
+            <p>{{ date }}</p>
           </div>
         </div>
       </div>
@@ -60,7 +61,7 @@
           <li class="active"><a href="{% url 'index' %}"><span class="fa fa-home desktop-home"></span><span class="mobile-show">Home</span></a></li>
           {% for ctg in ctgs %}
             {% if ctg.is_active %}
-              <li><a href="#">{{ ctg.name }}</a></li>
+              <li><a href="{% url 'category' ctg.id %}">{{ ctg.name }}</a></li>
             {% endif %}
           {% endfor %}
       </div>
@@ -108,32 +109,10 @@
               <li class="active">Mobile</li>
             </ol>
             <h1>{{ info.title }}</h1>
-            <div class="post_commentbox"> <a href="#"><i class="fa fa-user"></i>None</a> <span><i class="fa fa-calendar"></i>{{ info.created_at }}</span> <a href="#"><i class="fa fa-tags"></i>{{ info.category.name}}</a> </div>
+            <div class="post_commentbox"> <a href="#"><i class="fa fa-eye"></i>{{ info.views }}</a> <span><i class="fa fa-calendar"></i>{{ info.created_at }}</span> <a href="#"><i class="fa fa-tags"></i>{{ info.category.name}}</a> </div>
             <div class="single_page_content"> <img class="img-center" src="{{ info.image.url }}" alt="">
               <blockquote>{{ info.short_desc}}</blockquote>
               <p>{{ info.description }}</p>
-              <!-- <ul>
-                <li>Nullam vitae nibh odio, non scelerisque nibh</li>
-                <li>Nullam vitae nibh odio, non scelerisque nibh</li>
-                <li>Nullam vitae nibh odio, non scelerisque nibh</li>
-                <li>Nullam vitae nibh odio, non scelerisque nibh</li>
-                <li>Nullam vitae nibh odio, non scelerisque nibh</li>
-                <li>Nullam vitae nibh odio, non scelerisque nibh</li>
-              </ul>
-              <h2>This is h2 title</h2>
-              <h3>This is h3 title</h3>
-              <h4>This is h4 title</h4>
-              <h5>This is h5 title</h5>
-              <h6>This is h6 Title</h6>
-              <button class="btn default-btn">Default</button>
-              <button class="btn btn-red">Red Button</button>
-              <button class="btn btn-yellow">Yellow Button</button>
-              <button class="btn btn-green">Green Button</button>
-              <button class="btn btn-black">Black Button</button>
-              <button class="btn btn-orange">Orange Button</button>
-              <button class="btn btn-blue">Blue Button</button>
-              <button class="btn btn-lime">Lime Button</button>
-              <button class="btn btn-theme">Theme Button</button> -->
             </div>
             <div class="social_link">
               <ul class="sociallink_nav">
@@ -179,9 +158,9 @@
       <div class="col-lg-4 col-md-4 col-sm-4">
         <aside class="right_content">
           <div class="single_sidebar">
-            <h2 id="world"><span>World</span></h2>
+            <h2 id="world"><span>Popular News</span></h2>
             <ul class="spost_nav">
-              {% for new in news_world %}
+              {% for new in popular %}
                 {% if forloop.counter < 5 %}
                   <li>
                     <div class="media wow fadeInDown"> <a href="{% url 'detail'  new.id %}" class="media-left"> <img alt="" src="{{ new.image.url }}"> </a>
@@ -202,7 +181,7 @@
                 <ul>
                   {% for ctg in ctgs %}
                     {% if ctg.is_active %}
-                      <li class="cat-item"><a href="#">{{ ctg.name }}</a></li>
+                      <li class="cat-item"><a href="{% url 'category' ctg.id %}">{{ ctg.name }}</a></li>
                     {% endif %}
                   {% endfor %}
                 </ul>
@@ -214,39 +193,26 @@
               </div>
               <div role="tabpanel" class="tab-pane" id="comments">
                 <ul class="spost_nav">
+                  {% for i in 3|range_filter %}
                   <li>
-                    <div class="media wow fadeInDown"> <a href="" class="media-left"> <img alt="" src="../images/post_img1.jpg"> </a>
+                    <div class="media wow fadeInDown"> <a href="" class="media-left"> <img alt="" src="{% static 'images/post_img1.jpg' %}"> </a>
                       <div class="media-body"> <a href="" class="catg_title"> Aliquam malesuada diam eget turpis varius 1</a> </div>
                     </div>
                   </li>
-                  <li>
-                    <div class="media wow fadeInDown"> <a href="" class="media-left"> <img alt="" src="../images/post_img2.jpg"> </a>
-                      <div class="media-body"> <a href="" class="catg_title"> Aliquam malesuada diam eget turpis varius 2</a> </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="media wow fadeInDown"> <a href="" class="media-left"> <img alt="" src="../images/post_img1.jpg"> </a>
-                      <div class="media-body"> <a href="" class="catg_title"> Aliquam malesuada diam eget turpis varius 3</a> </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="media wow fadeInDown"> <a href="" class="media-left"> <img alt="" src="../images/post_img2.jpg"> </a>
-                      <div class="media-body"> <a href="" class="catg_title"> Aliquam malesuada diam eget turpis varius 4</a> </div>
-                    </div>
-                  </li>
+                  {% endfor %}
                 </ul>
               </div>
             </div>
           </div>
           <div class="single_sidebar wow fadeInDown">
             <h2><span>Sponsor</span></h2>
-            <a class="sideAdd" href="#"><img src="../images/add_img.jpg" alt=""></a> </div>
+            <a class="sideAdd" href="#"><img src="{% static 'images/add_img.jpg' %}" alt=""></a> </div>
           <div class="single_sidebar wow fadeInDown">
             <h2><span>Category Archive</span></h2>
-            <select class="catgArchive">
+            <select class="catgArchive" onchange="if (this.value) window.location.href=this.value;">
               {% for ctg in ctgs %}
                 {% if ctg.is_active %}
-                  <option>{{ ctg.name }}</option>
+                <option value="{% url 'category' ctg.id %}">{{ ctg.name }}</option>
                 {% endif %}
               {% endfor %}
             </select>
@@ -278,7 +244,7 @@
             <ul class="tag_nav">
               {% for ctg in ctgs %}
                 {% if ctg.is_active %}
-                  <li><a href="#">{{ ctg.name }}</a></li>
+                  <li><a href="{% url 'category' ctg.id %}">{{ ctg.name }}</a></li>
                 {% endif %}
               {% endfor %}
             </ul>
@@ -296,8 +262,8 @@
       </div>
     </div>
     <div class="footer_bottom">
-      <p class="copyright">Copyright &copy; 2025 <a href="{% url 'index' %}">NewsFeed</a></p>
-      <p class="developer">Developed By Wpfreeware</p>
+      <p class="copyright">Copyright &copy; {{ date.year }} <a href="{% url 'index' %}">KunUz</a></p>
+      <p class="developer">Developed By Samandar</p>
     </div>
   </footer>
 </div>
