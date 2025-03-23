@@ -19,6 +19,16 @@
 <script src="assets/js/html5shiv.min.js"></script>
 <script src="assets/js/respond.min.js"></script>
 <![endif]-->
+<style>
+  .roboto_font {
+    background-color: black;
+    font-family: "Roboto", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 900;
+    font-style: italic;
+    font-variation-settings:"wdth" 100;
+  }
+</style>
 </head>
 <body>
 <div id="preloader">
@@ -35,6 +45,7 @@
               <li><a href="{% url 'index' %}">Home</a></li>
               <li><a href="#">About</a></li>
               <li><a href="{% url 'contact' %}">Contact</a></li>
+              <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
             </ul>
           </div>
           <div class="header_top_right">
@@ -60,7 +71,11 @@
           <li class="active"><a href="{% url 'index' %}"><span class="fa fa-home desktop-home"></span><span class="mobile-show">Home</span></a></li>
           {% for ctg in ctgs %}
             {% if ctg.is_active %}
-              <li><a href="{% url 'category' ctg.id %}">{{ ctg.name }}</a></li>
+              {% if ctg.id == news.0.category.id %}
+                <li class="roboto_font"><a href="{% url 'category' ctg.id %}">{{ ctg.name }}</a></li>
+              {% else %}
+                <li><a href="{% url 'category' ctg.id %}">{{ ctg.name }}</a></li>
+              {% endif %}
             {% endif %}
           {% endfor %}
         </ul>

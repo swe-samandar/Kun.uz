@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profilni yangilash</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .profile-card {
+            max-width: 500px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #007bff;
+            display: block;
+            margin: 0 auto 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="profile-card">
+            <h2 class="text-center mb-3">Profilni yangilash</h2>
+
+            <!-- Eski rasmni chiqarish -->
+            {% if request.user.userimage.image %}
+                <a href="{% url 'update-image' %}"><img src="{{ request.user.userimage.image.url }}" alt="Profil rasmi" class="profile-image"></a>
+            {% else %}
+                <a href="{% url 'update-image' %}"><img src="/static/default-profile.png" alt="Default User Image" class="profile-image"></a>
+            {% endif %}
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label">Foydalanuvchi ma’lumotlari</label>
+                    {{ user_form.as_p }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Profil rasmi</label>
+                    {{ image_form.as_p }}
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Saqlash</button>
+            </form>
+
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary w-100 mt-3">Orqaga</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

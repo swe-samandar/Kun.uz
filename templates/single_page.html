@@ -20,6 +20,16 @@
 <script src="../assets/js/html5shiv.min.js"></script>
 <script src="../assets/js/respond.min.js"></script>
 <![endif]-->
+<style>
+  .roboto_font {
+    background-color: black;
+    font-family: "Roboto", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 900;
+    font-style: italic;
+    font-variation-settings:"wdth" 100;
+  }
+</style>
 </head>
 <body>
 <div id="preloader">
@@ -36,6 +46,7 @@
               <li><a href="{% url 'index' %}">Home</a></li>
               <li><a href="#">About</a></li>
               <li><a href="{% url 'contact' %}">Contact</a></li>
+              <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
             </ul>
           </div>
           <div class="header_top_right">
@@ -61,14 +72,18 @@
           <li class="active"><a href="{% url 'index' %}"><span class="fa fa-home desktop-home"></span><span class="mobile-show">Home</span></a></li>
           {% for ctg in ctgs %}
             {% if ctg.is_active %}
-              <li><a href="{% url 'category' ctg.id %}">{{ ctg.name }}</a></li>
+              {% if ctg.id == info.category.id %}
+                <li class="roboto_font"><a href="{% url 'category' ctg.id %}">{{ ctg.name }}</a></li>
+              {% else %}
+                <li><a href="{% url 'category' ctg.id %}">{{ ctg.name }}</a></li>
+              {% endif %}
             {% endif %}
           {% endfor %}
       </div>
     </nav>
+
   </section>
-  <section id="newsSection">
-    <div class="row">
+  <section id="newsSection">215, 64, 114color: aqua
       <div class="col-lg-12 col-md-12">
         <div class="latest_newsarea"> <span>Latest News</span>
           <ul id="ticker01" class="news_sticker">
@@ -101,18 +116,43 @@
   <section id="contentSection">
     <div class="row">
       <div class="col-lg-8 col-md-8 col-sm-8">
-        <div class="left_content">
+        <div class="left_contecommentsnt">
           <div class="single_page">
             <ol class="breadcrumb">
               <li><a href="{% url 'index' %}">Home</a></li>
               <li><a href="#">Technology</a></li>
               <li class="active">Mobile</li>
             </ol>
-            <h1>{{ info.title }}</h1>
-            <div class="post_commentbox"> <a href="#"><i class="fa fa-eye"></i>{{ info.views }}</a> <span><i class="fa fa-calendar"></i>{{ info.created_at }}</span> <a href="#"><i class="fa fa-tags"></i>{{ info.category.name}}</a> </div>
-            <div class="single_page_content"> <img class="img-center" src="{{ info.image.url }}" alt="">
-              <blockquote>{{ info.short_desc}}</blockquote>
-              <p>{{ info.description|safe }}</p>
+            <div style="display: flex; flex-direction: column; padding: 0;">
+              <h1>{{ info.title }}</h1>
+              <div class="post_commentbox"> <a href="#"><i class="fa fa-eye"></i>{{ info.views }}</a> <span><i class="fa fa-calendar"></i>{{ info.created_at }}</span> <a href="{% url 'category' info.category.id %}"><i class="fa fa-tags"></i>{{ info.category.name}}</a> </div>
+              <div class="single_page_content"> <img class="img-center" src="{{ info.image.url }}" alt="">
+                <blockquote>{{ info.short_desc}}</blockquote>
+                <p>{{ info.description|safe }}</p>
+              </div>
+
+              <!-- Kommentlar Ro‘yxati -->
+              <div class="comments_section">
+                <h2>Comments <i class="fa fa-comments"></i></h2>
+                {% for comment in comments|slice:'0:3' %}
+                    <div class="comment">
+                        <strong>{{ comment.user }}</strong> - <span>{{ comment.created_at }}</span>
+                        <p>{{ comment.content }}</p>
+                    </div>
+                {% empty %}
+                    <p>No comments yet. Be the first to comment!</p>
+                {% endfor %}
+              </div>
+
+              <!-- Komment Qo‘shish Formasi -->
+              <div class="comment_form">
+                <h3>Leave a Comment</h3>
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">Send</button>
+                </form>
+              </div>
             </div>
             <div class="social_link">
               <ul class="sociallink_nav">
@@ -186,17 +226,13 @@
                   {% endfor %}
                 </ul>
               </div>
-              <div role="tabpanel" class="tab-pane" id="video">
-                <div class="vide_area">
-                  <iframe width="100%" height="250" src="http://www.youtube.com/embed/h5QWbURNEpA?feature=player_detailpage" frameborder="0" allowfullscreen></iframe>
-                </div>
-              </div>
               <div role="tabpanel" class="tab-pane" id="comments">
                 <ul class="spost_nav">
-                  {% for i in 3|range_filter %}
+                  {% for comment in comments|slice:'0:3' %}
                   <li>
-                    <div class="media wow fadeInDown"> <a href="" class="media-left"> <img alt="" src="{% static 'images/post_img1.jpg' %}"> </a>
-                      <div class="media-body"> <a href="" class="catg_title"> Aliquam malesuada diam eget turpis varius 1</a> </div>
+                    <div class="media wow fadeInDown"><i class="fa fa-comments"></i>
+                      <div class="media-body"> <h4 class="catg_title">User: {{ comment.user.first_name }}</h4> </div><br>
+                      <div class="media-body"> <pre class="catg_title">{{ comment.content }}</pre> </div><hr>
                     </div>
                   </li>
                   {% endfor %}
@@ -221,8 +257,8 @@
             <h2><span>Links</span></h2>
             <ul>
               <li><a href="#">Blog</a></li>
-              <li><a href="#">Rss Feed</a></li>
-              <li><a href="#">Login</a></li>
+              <li><a href="{% url 'register' %}">Register</a></li>
+              <li><a href="{% url 'login' %}">Login</a></li>
               <li><a href="#">Life &amp; Style</a></li>
             </ul>
           </div>
@@ -253,9 +289,9 @@
         <div class="col-lg-4 col-md-4 col-sm-4">
           <div class="footer_widget wow fadeInRightBig">
             <h2>Contact</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+            <p>I'm a backend web developer from Fergana</p>
             <address>
-            Perfect News,1238 S . 123 St.Suite 25 Town City 3333,USA Phone: 123-326-789 Fax: 123-546-567
+            Uzbekistan, Fergana, Altiarik, Katput, Khalik Palvan 13 <br> Phone: 91 504 05 18 <br> Email: samandarnemataliyev@gmail.com 
             </address>
           </div>
         </div>
