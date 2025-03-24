@@ -16,9 +16,12 @@ class Comment(models.Model):
     post = models.ForeignKey(News, on_delete=models.CASCADE)
     content = models.CharField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
-    likes = models.PositiveIntegerField(default=0)
-    rate = models.BooleanField(default=False)
-    updated_at = models.DateTimeField(auto_now=True)
+    likes = models.ManyToManyField(User, related_name="liked_comments", blank=True)
+    views = models.PositiveBigIntegerField(default=0)
+    updated_at = models.DateTimeField(blank=True, null=True)
+
+    def total_likes(self):
+        return self.likes.count()
 
     def __str__(self):
         return f"{self.content} from {self.user.first_name}"

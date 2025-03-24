@@ -33,11 +33,7 @@ class RegisterForm(forms.ModelForm):
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['content', 'likes', 'rate']
-        # widgets = {
-        #     'likes': forms.BooleanField(),
-        #     'rate': forms.BooleanField()
-        # }
+        fields = ['content']
 
 
 

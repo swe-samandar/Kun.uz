@@ -9,6 +9,6 @@ urlpatterns = [
     path('dashboard/', Dashboard.as_view(), name='dashboard'),
     path('update-user/', UpdateUser.as_view(), name='update-user'),
     path('logout/', LogoutUser.as_view(), name='logout'),
-    path('update-image/', UpdateUserImage.as_view(), name='update-image')
+    path('update-image/', UpdateUserImage.as_view(), name='update-image'),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

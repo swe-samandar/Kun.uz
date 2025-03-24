@@ -7,7 +7,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
 from .models import UserImage
-from .forms import RegisterForm,  UpdateUserForm, UserImageForm
+from .forms import RegisterForm,  UpdateUserForm, UserImageForm, CommentForm
+from .models import Comment
 
 class Register(View):
     def get(self, request):
@@ -61,14 +62,20 @@ class LoginUser(View):
 
 
 
-class Dashboard(View):
+class Dashboard(LoginRequiredMixin, View):
+    template_name = 'dashboard.html'
+    login_url = 'login/' 
+
     def get(self, request):
         profile = UserImage.objects.filter(user=request.user).first()
         return render(request, 'dashboard.html', {'profile': profile})
 
 
 
-class UpdateUser(View):
+class UpdateUser(LoginRequiredMixin, View):
+    template_name = 'update_user.html'
+    login_url = 'login/' 
+
     def get(self, request):
         user = get_object_or_404(User, id=request.user.id)
         image = UserImage.objects.filter(user=user).first()
@@ -96,7 +103,11 @@ class UpdateUser(View):
         return render(request, 'update_user.html', {'user_form': user_form, 'image_form': image_form})
 
 
-class UpdateUserImage(View):
+
+class UpdateUserImage(LoginRequiredMixin, View):
+    template_name = 'update_image.html'
+    login_url = 'login/' 
+
     def get(self, request):
         profile = UserImage.objects.filter(user=request.user).first()
         form = UserImageForm(instance=profile)
@@ -116,6 +127,7 @@ class UpdateUserImage(View):
             form = UserImageForm()
         
         return render(request, 'update_image.html', {'form':form})
+
 
 
 class LogoutUser(View):

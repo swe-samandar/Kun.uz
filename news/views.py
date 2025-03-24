@@ -4,6 +4,10 @@ from datetime import datetime
 from .models import Message
 from user.models import Comment
 from .forms import CommentForm
+from django.contrib.auth.decorators import login_required
+from django.utils.timezone import now
+from django.http import JsonResponse
+
 
 def get_date():
     return datetime.date(datetime.today())
@@ -87,6 +91,10 @@ def detail(request, pk):
         'form': form,
     }
 
+    for comment in comments[:3]:
+        comment.views += 1
+        comment.save()
+
     if request.method=='POST':
         form = CommentForm(request.POST)
         if form.is_valid():
@@ -95,7 +103,7 @@ def detail(request, pk):
             comment.post = info
             comment.save()
             return redirect('detail', info.id)
-    
+
     return render(request, 'single_page.html', context=context)
 
 
@@ -121,3 +129,45 @@ def category(request, pk):
     }
 
     return render(request, 'category.html', context=context)
+
+
+@login_required
+def like_comment(request, pk):
+    comment = get_object_or_404(Comment, id=pk)
+    liked = False
+
+    if request.user in comment.likes.all():
+        comment.likes.remove(request.user)
+    else:
+        comment.likes.add(request.user)
+        liked = True
+
+    return JsonResponse({"liked": liked, "likes_count": comment.likes.count()})
+
+@login_required
+def edit_comment(request, pk):
+    comment = get_object_or_404(Comment, id=pk)
+
+    if comment.user != request.user:
+        return JsonResponse({"error": "You can only edit your own comments"}, status=403)
+
+    if request.method == "POST":
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.updated_at = now()
+            comment.save()
+            return JsonResponse({"success": True, "new_content": comment.content})
+
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
+
+@login_required
+def delete_comment(request, pk):
+    comment = get_object_or_404(Comment, id=pk)
+
+    if comment.user != request.user:
+        return JsonResponse({"error": "You can only delete your own comments"}, status=403)
+
+    comment.delete()
+    return JsonResponse({"success": True})
