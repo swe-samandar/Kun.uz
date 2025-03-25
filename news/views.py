@@ -7,6 +7,15 @@ from .forms import CommentForm
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
 from django.http import JsonResponse
+import requests
+
+
+url = 'https://cbu.uz/oz/arkhiv-kursov-valyut/json/'
+
+def get_json_data(url_):
+    response = requests.get(url_)
+    data = response.json()
+    return data
 
 
 def get_date():
@@ -39,7 +48,7 @@ def index(request):
     context = {
         'news': get_news(),
         'popular': get_popular(),
-        'latest_news': get_latest()[2:],
+        'dict': get_json_data(url),
         'news_uzb': news_uzb,
         'news_world': news_world,
         'news_eco': news_eco,
@@ -84,7 +93,7 @@ def detail(request, pk):
         'info': info,
         'news': news,
         'popular': get_popular(),
-        'latest_news': get_latest(),
+        'dict': get_json_data(url),
         'ctgs': get_categories(),
         'date': get_date(),
         'comments': comments,
@@ -109,7 +118,7 @@ def detail(request, pk):
 
 def error_page(request):
     context = {
-        'latest_news': get_latest(),
+        'dict': get_json_data(url),
         'popular': get_popular(),
         'ctgs': get_categories(),
         'date': get_date(),
@@ -123,7 +132,7 @@ def category(request, pk):
     
     context = {
         'news': news,
-        'latest_news': get_latest(),
+        'dict': get_json_data(url),
         'ctgs': get_categories(),
         'date': get_date(),
     }
@@ -143,6 +152,7 @@ def like_comment(request, pk):
         liked = True
 
     return JsonResponse({"liked": liked, "likes_count": comment.likes.count()})
+
 
 @login_required
 def edit_comment(request, pk):

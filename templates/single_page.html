@@ -83,17 +83,13 @@
     </nav>
 
   </section>
-  <section id="newsSection">215, 64, 114color: aqua
+  <section id="newsSection">
     <div class="col-lg-12 col-md-12">
-      <div class="latest_newsarea"> <span>Latest News</span>
+      <div class="latest_newsarea"> <span>Valyuta kurslari</span>
         <ul id="ticker01" class="news_sticker">
-          {% for new in latest_news %}
-            {% if forloop.counter < 6 %}
-              <li>
-                <div class="media"> <a href="{% url 'detail'  new.id %}" class="media-left"> <img alt="" src="{{ new.image.url }}"> </a>
-                  <div class="media-body"> <a href="{% url 'detail'  new.id %}" class="catg_title">{{ new.title }}</a> </div>
-                </div>
-              </li>
+          {% for key in dict %}
+            {% if forloop.counter < 4 %}
+              <li><a href="#">1 {{ key.Ccy }} = {{ key.Rate }} UZS</a></li>
             {% endif %}
           {% endfor %}
         </ul>

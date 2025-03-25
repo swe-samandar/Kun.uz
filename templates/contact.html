@@ -71,11 +71,11 @@
   <section id="newsSection">
     <div class="row">
       <div class="col-lg-12 col-md-12">
-        <div class="latest_newsarea"> <span>Latest News</span>
+        <div class="latest_newsarea"> <span>Valyuta kurslari</span>
           <ul id="ticker01" class="news_sticker">
-            {% for new in news %}
-              {% if forloop.counter < 5 %}
-                <li><a href="{% url 'detail' new.id %}"><img src="{{ new.image.url }}" alt="news_image">{{ new.title }}</a></li>
+            {% for key in dict %}
+              {% if forloop.counter < 4 %}
+                <li><a href="#">1 {{ key.Ccy }} = {{ key.Rate }} UZS</a></li>
               {% endif %}
             {% endfor %}
           </ul>
